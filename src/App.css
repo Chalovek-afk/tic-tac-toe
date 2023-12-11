@@ -1,3 +1,6 @@
+.App {
+  padding-left: 35%;
+}
 .Block {
   width: 150px;
   height: 150px;
@@ -10,4 +13,7 @@
 }
 .mark2 {
   background-image: url('XO/O.png');
+}
+.win {
+  background-color: chartreuse;
 }
