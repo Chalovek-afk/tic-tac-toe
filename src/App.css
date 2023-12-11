@@ -17,3 +17,7 @@
 .win {
   background-color: chartreuse;
 }
+.text {
+  padding-left: 19%;
+  font-size: 40pt;
+}

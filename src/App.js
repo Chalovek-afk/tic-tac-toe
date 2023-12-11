@@ -1,36 +1,16 @@
 import "./App.css";
 import { useEffect } from "react";
-import { Provider, connect } from "react-redux";
-import { createStore } from "redux";
+import { Provider, connect, useDispatch } from "react-redux";
+import store, { async_incrementCreator } from "./store";
+import {fetchCountData} from "./sagas/sagaPost"
 
-const initialState = {
-  marks: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  player: 1,
-  end: false,
-  win: ['', '', '', '', '', '', '', '', '']
-};
-const store = createStore(reducer);
-
-function reducer(state = initialState, action) {
-  switch (action.type) {
-    case "SET_MARKS":
-      return { ...state, marks: action.payload };
-    case "SET_PLAYER":
-      return { ...state, player: action.payload };
-    case "SET_ENDGAME":
-      return { ...state, end: action.payload };
-    case "SET_WIN":
-      return { ...state, win: action.payload}
-    default:
-      return state;
-  }
-}
 const mapStateToProps = (state) => {
   return {
     marks: state.marks,
     player: state.player,
     end: state.end,
-    win: state.win
+    win: state.win,
+    count: state.count
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -64,7 +44,7 @@ function App() {
   );
 }
 
-function Board({marks, setMarks, player, setPlayer, end, setEnd, win, setWin}) {
+function Board({marks, setMarks, player, setPlayer, end, setEnd, win, setWin, count}) {
   useEffect(() => {
     const winComb = [
       [0, 1, 2],
@@ -92,16 +72,19 @@ function Board({marks, setMarks, player, setPlayer, end, setEnd, win, setWin}) {
         wn[a[0]] = 'win'
         wn[a[1]] = 'win'
         wn[a[2]] = 'win'
+        setWin(wn)
         setEnd(true);
         setPlayer(2)
       }
     }
   }, [marks, setEnd, setPlayer, win, setWin]);
 
+  const dispatch = useDispatch()
   const markChange = (arg) => {
     const mrk = [...marks];
     if (!end){
       if (mrk[arg] === 0) {
+        dispatch(async_incrementCreator())
         mrk[arg] = player;
         setMarks(mrk);
         if (player === 1) {
@@ -119,6 +102,7 @@ function Board({marks, setMarks, player, setPlayer, end, setEnd, win, setWin}) {
 
   return (
     <div className="Board">
+      <div className="text">{count}</div>
       <div>
         <Block mark={marks[0]} markChange={markChange} position={0} winCls={win[0]}></Block>
         <Block mark={marks[1]} markChange={markChange} position={1} winCls={win[1]}></Block>
