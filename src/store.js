@@ -1,13 +1,9 @@
 import { applyMiddleware, createStore } from "redux";
 import createSagaMiddleware from "redux-saga"
-import { countWatcher } from "./sagas/sagaCount";
+import { rootWatcher } from "./sagas/index";
 
 
 const sagaMiddleware = createSagaMiddleware()
-
-const FETCH_COUNT = "FETCH_COUNT";
-const FETCH_COUNT_SUCCESS = "FETCH_COUNT_SUCCES";
-const FETCH_COUNT_ERROR = "FETCH_COUNT_ERROR";
 
 
 
@@ -18,6 +14,7 @@ const initialState = {
   end: false,
   win: ["", "", "", "", "", "", "", "", ""],
   count: 0,
+  users: []
 };
 
 const SET_MARKS = "SET_MARKS";
@@ -28,6 +25,9 @@ const SET_ENDGAME = "SET_ENDGAME";
 
 const SET_WIN = "SET_WIN";
 
+const SET_USERS = "SET_USERS"
+
+export const FETCH_USERS = "FETCH_USERS"
 const INCREMENT = "INCREMENT";
 export const ASYNC_INCREMENT = "ASYNC_INCREMENT";
 
@@ -44,19 +44,18 @@ function reducer(state = initialState, action) {
       return { ...state, win: action.payload };
     case INCREMENT:
       return { ...state, count: state.count + 1 };
+    case SET_USERS:
+      return {...state, users: action.payload}
     default:
       return state;
   }
 }
 const store = createStore(reducer, applyMiddleware(sagaMiddleware));
 
+export const fetchUsers = () => ({type: FETCH_USERS})
+export const setUsers = payload => ({type: SET_USERS, payload})
 export const incrementCreator = () => ({type: INCREMENT})
 export const async_incrementCreator = () => ({type: ASYNC_INCREMENT})
-
-const fetchCount = () => ({ type: FETCH_COUNT });
-const fetchCountSuccess = (data) => ({ type: FETCH_COUNT_SUCCESS, data });
-const fetchCountError = (error) => ({ type: FETCH_COUNT_ERROR, error });
-
 export default store;
 
-sagaMiddleware.run(countWatcher)
+sagaMiddleware.run(rootWatcher)

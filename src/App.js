@@ -1,8 +1,7 @@
 import "./App.css";
 import { useEffect } from "react";
 import { Provider, connect, useDispatch } from "react-redux";
-import store, { async_incrementCreator } from "./store";
-import {fetchCountData} from "./sagas/sagaPost"
+import store, { async_incrementCreator, fetchUsers } from "./store";
 
 const mapStateToProps = (state) => {
   return {
@@ -10,7 +9,8 @@ const mapStateToProps = (state) => {
     player: state.player,
     end: state.end,
     win: state.win,
-    count: state.count
+    count: state.count,
+    users: state.users
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -44,7 +44,7 @@ function App() {
   );
 }
 
-function Board({marks, setMarks, player, setPlayer, end, setEnd, win, setWin, count}) {
+function Board({marks, setMarks, player, setPlayer, end, setEnd, win, setWin, count, users}) {
   useEffect(() => {
     const winComb = [
       [0, 1, 2],
@@ -118,7 +118,19 @@ function Board({marks, setMarks, player, setPlayer, end, setEnd, win, setWin, co
         <Block mark={marks[7]} markChange={markChange} position={7} winCls={win[7]}></Block>
         <Block mark={marks[8]} markChange={markChange} position={8} winCls={win[8]}></Block>
       </div>
+      <div>
+          <button onClick={() =>  dispatch(fetchUsers())}>
+            Получить пользователей
+          </button>
+          <div className='users'>
+            {users.map(user => 
+              <div className='User'>
+                {user.username}
+              </div>)}
+          </div>
+        </div>
     </div>
+    
   );
 }
 
